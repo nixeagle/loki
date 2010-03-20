@@ -1,0 +1,4 @@
+#+TITLE: loki todo
+
+* TODO make-method-function
+  - [ ] Remove compile call if possible.

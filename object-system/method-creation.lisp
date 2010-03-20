@@ -73,6 +73,7 @@ create a compiled closure"
                               ,(method-forms self)))))
 
 (defun make-method-function (lambda-list body)
+  "Take lambda-list and a body and return a loki method-object."
   (multiple-value-bind (forms declarations docstring)
       (parse-body body :documentation t :whole t)
     (let ((this-method (make-method-object :lambda-list lambda-list
