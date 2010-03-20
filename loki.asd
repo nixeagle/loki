@@ -23,6 +23,7 @@
    (:module object-system
             :serial t
             :components ((:file "boot")
+                         (:file "method-creation")
                          (:file "method")
                          (:file "userland-setup")
                          (:file "print-readably")))
