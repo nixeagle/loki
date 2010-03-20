@@ -16,11 +16,7 @@
                :bordeaux-threads)
   :serial t
   :components
-  (#+ () (:module mop
-            :serial t
-            :components ((:file "packages")
-                         (:file "boot")))
-   (:module object-system
+  ((:module object-system
             :serial t
             :components ((:file "boot")
                          (:file "method-creation")
