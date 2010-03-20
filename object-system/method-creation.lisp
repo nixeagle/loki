@@ -3,23 +3,22 @@
 (defstruct (method-object
              (:conc-name method-)
              (:include data-mixin)
-             (:constructor)
-             (:print-object
-              (lambda (obj *standard-output*)
-                (if *print-readably*
-                    (format *standard-output*
-                            "#S(~S :direct-mimics ~S :direct-cells ~S :lambda-list ~S :forms ~S :docstring ~S :declarations ~S)"
-                            (type-of obj) (direct-mimics obj)
-                            (direct-cells obj) (method-lambda-list obj)
-                            (method-forms obj)
-                            (docstring obj)
-                            (method-declarations obj))
-                    (call-next-method)))))
+             (:constructor))
   (declarations '() :type list)
   (function nil :type (or null function)) ;Slot is temp nil at load/compile
   (lambda-list '() :type list)
   (forms '() :type list))
 
+(defmethod print-object ((obj method-object) stream)
+  (if *print-readably*
+      (format *standard-output*
+              "#S(~S :direct-mimics ~S :direct-cells ~S :lambda-list ~S :forms ~S :docstring ~S :declarations ~S)"
+              (type-of obj) (direct-mimics obj)
+              (direct-cells obj) (method-lambda-list obj)
+              (method-forms obj)
+              (docstring obj)
+              (method-declarations obj))
+      (call-next-method)))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defun make-method-lambda-function (this-method declarations docstring
