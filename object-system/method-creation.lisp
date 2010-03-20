@@ -72,18 +72,17 @@ create a compiled closure"
                               ,(method-lambda-list self)
                               ,(method-forms self)))))
 
+(defun make-method-function (lambda-list body)
+  (multiple-value-bind (forms declarations docstring)
+      (parse-body body :documentation t :whole t)
+    (let ((this-method (make-method-object :lambda-list lambda-list
+                                           :forms forms
+                                           :docstring docstring
+                                           :declarations declarations)))
+      (setf (method-function this-method)
+            (compile nil (make-method-lambda-function this-method declarations
+                                          docstring lambda-list forms)))
+      this-method)))
 
 (defmacro make-method (lambda-list &body body)
-  (multiple-value-bind (forms declarations docstring)
-      (parse-body body  :documentation t :whole t)
-    (with-gensyms (this-method)
-      `(let ((,this-method
-              ,(make-method-object #+ :direct-mimics (list *origin*)
-                                   :lambda-list lambda-list
-                                   :forms forms
-                                   :docstring docstring
-                                   :declarations declarations)))
-         (setf (method-function ,this-method)
-               (make-method-lambda ,this-method ,declarations ,docstring
-                                         ,lambda-list ,forms))
-         ,this-method))))
+  `(make-method-function ',lambda-list ',@body))
