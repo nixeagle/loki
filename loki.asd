@@ -13,7 +13,6 @@
   :version #.+loki-version+
   :depends-on (:alexandria
                :split-sequence
-               :iterate
                :bordeaux-threads)
   :serial t
   :components
