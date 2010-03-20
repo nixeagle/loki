@@ -73,16 +73,6 @@ create a compiled closure"
                               ,(method-lambda-list self)
                               ,(method-forms self)))))
 
-(defun call-method (object receiver &rest args)
-  "Apply ARGS to OBJECT's `method-function'."
-  (declare (type method-object object))
-  (apply (method-function object) (make-object)
-         receiver (make-object) args))
-
-(defun call (receiver method-name &rest args)
-  (declare (type object receiver))
-  (apply (method-function (cell receiver method-name))
-         (make-object) receiver (make-object) args))
 
 (defmacro make-method (lambda-list &body body)
   (multiple-value-bind (forms declarations docstring)
@@ -98,3 +88,15 @@ create a compiled closure"
                (make-method-lambda ,this-method ,declarations ,docstring
                                          ,lambda-list ,forms))
          ,this-method))))
+
+
+(defun call-method (object receiver &rest args)
+  "Apply ARGS to OBJECT's `method-function'."
+  (declare (type method-object object))
+  (apply (method-function object) (make-object)
+         receiver (make-object) args))
+
+(defun call (receiver method-name &rest args)
+  (declare (type object receiver))
+  (apply (method-function (cell receiver method-name))
+         (make-object) receiver (make-object) args))
