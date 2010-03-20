@@ -20,9 +20,21 @@
   (lambda-list '() :type list)
   (forms '() :type list))
 
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defmacro make-method-lambda (this-method declarations docstring
-                                  arguments forms)
+  (defun make-method-lambda-function (this-method declarations docstring
+                                      arguments forms)
+    "Create a method lambda form for THIS-METHOD.
+
+THIS-METHOD is a loki `method-object'. The remaining parameters should go
+in the equivalent places that they go in for a commmon lisp function.
+
+The insertion of the DOCSTRING, DECLARATIONS, ARGUMENTS and FORM on
+THIS-METHOD is handled elsewhere and is not the concern of this
+function.
+
+The expected return value of this is a lambda form. Refer to the common
+lisp MOP for semantics."
     `(lambda (message receiver context ,@arguments)
        ,docstring
        (declare (type object context message receiver))
@@ -37,9 +49,13 @@
                              context |surroundingContext|))
          ,@forms))))
 
-#+ ()
-(defmacro make-method-lambda (this-method arguments expression)
-  `#',(make-method-lambda-form this-method arguments expression))
+(defmacro make-method-lambda (this-method declarations docstring
+                              arguments forms)
+  "Macro helper we use for now to take the generated lambda form and
+create a compiled closure"
+  (make-method-lambda-function this-method declarations docstring
+                               arguments forms))
+
 
 (defmethod make-load-form ((self method-object) &optional env)
   (declare (ignore env))
