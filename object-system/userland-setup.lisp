@@ -1,7 +1,5 @@
 (in-package :loki-object-system)
 
-(make-string-object :data "a")
-
 (setf (direct-cell *base* "kind") "Base")
 (setf (direct-cell *base* "inspect") "Base")
 (setf (direct-cell *base* "notice") "Base")
@@ -96,15 +94,20 @@ For starters this really begs to be a macro."
 
 (define-constant +standard-read-string+ (get-macro-character #\" (copy-readtable nil)))
 
+(defun string-reader (stream char)
+  "Convert lisp strings to loki strings.
+
+We do this with the readtable as opposed to doing it elsewhere because
+every loki string is represented to loki programmers as a loki object."
+  (make-string-object :data (funcall +standard-read-string+ stream char)))
+
 (defun call-with-loki-readtable (thunk)
   (declare (type function thunk))
   (let ((*readtable* (copy-readtable nil)))
     (setf (readtable-case *readtable*) :preserve)
-    (set-macro-character #\" (lambda (stream char)
-                               (make-string-object
-                                :data
-                                (funcall +standard-read-string+ stream char))))
+    (set-macro-character #\" #'string-reader)
     (set-syntax-from-char #\, #\Space)
+
     (let ((*package* (find-package :loki-user)))
       (walk-loki-list (cl:funcall thunk)))))
 
@@ -144,6 +147,10 @@ For starters this really begs to be a macro."
 
 
 (defmacro transform (input)
+  "Convert INPUT to lisp compile it and run it.
+
+Right now this is the primary way to convert ioke/loki syntax to the
+internal lisp representation."
   (let ((tree (loki-repeating-read input)))
     `(call *ground* ,(car tree)
            ,@(cadr tree))))
