@@ -86,4 +86,4 @@ create a compiled closure"
       this-method)))
 
 (defmacro make-method (lambda-list &body body)
-  `(make-method-function ',lambda-list ',@body))
+  `(make-method-function ',lambda-list ',body))
