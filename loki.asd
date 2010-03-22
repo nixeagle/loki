@@ -9,10 +9,11 @@
 (defparameter +loki-version+ "0.0.1"
   "String indicating current version of loki.")
 
+
 (defsystem :loki
   :version #.+loki-version+
   :depends-on (:alexandria
-               :split-sequence
+               :anaphora
                :bordeaux-threads)
   :serial t
   :components
