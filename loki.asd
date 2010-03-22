@@ -23,5 +23,6 @@
                          (:file "method-creation")
                          (:file "method")
                          (:file "userland-setup")
-                         (:file "print-readably")))
+                         (:file "print-readably")
+                         (:file "reader")))
    (:file "main-package")))
